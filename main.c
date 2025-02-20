@@ -57,7 +57,7 @@ void print_table(t_view *v)
     {
         if (i % v->width == 0)
 			wprintf(L"\n");
-		wprintf(L"%s%lc ", BLUE, v->table[i]);
+		wprintf(L"%lc ", v->table[i]);
 		i++;
     }
 	wprintf(L"\n");
@@ -136,6 +136,49 @@ void	update_frame(t_view *v)
 	v->table = v->new_table;
 }
 
+t_view	gen_cells(t_view v)
+{
+	int	i = v.len / 2 + v.width / 2;
+	int j = v.len / 2 + v.width / 4; 
+	v.table[i] = L'■';
+	v.table[i + v.width] = L'■';
+	v.table[i + v.width + 2] = L'■';
+	v.table[i + (v.width * 2)] = L'■';
+	v.table[i + v.width - 3] = L'■';
+
+	v.table[j] = L'■';
+	v.table[j - v.width ] = L'■';
+	v.table[j - v.width - 1] = L'■';
+	v.table[j + v.width + 1] = L'■';
+	return v;
+}
+
+t_view	gen_cells_2(t_view v)
+{
+	int i = v.len / 4;
+
+	while (i < v.len / 2)
+	{
+		v.table[i] = L'■';
+		i+= 3;
+	}
+	return (v);
+}
+
+t_view	gen_cells_3(t_view v)
+{
+	int i = v.len / 5;
+
+	while (i < v.len / 2 + v.len / 4)
+	{
+		v.table[i] = L'■';
+		if ( i % 2 == 0)
+			i+= 3;
+		else
+			i += 5;
+	}
+	return (v);
+}
 
 int main(int argc, char **argv)
 {
@@ -144,23 +187,26 @@ int main(int argc, char **argv)
 	int frames = 400;
 
 	setlocale(LC_ALL, "");
+
 	v.width  = atoi(argv[1]);
 	v.height = atoi(argv[2]);
 	v.len = v.width * v.height;
     v.table = table_create(v.height, v.width);
-	v.table[5050] = L'■';
-	v.table[5050 + v.width] = L'■';
-	v.table[5050 + v.width + 1] = L'■';
-	v.table[5050 + (v.width * 2) + 1] = L'■';
-	v.table[5050 + v.width + 2] = L'■';
+	v = gen_cells_3(v);
+	// v.table[i] = L'■';
+	// v.table[1325 + v.width] = L'■';
+	// v.table[1325 + v.width + 1] = L'■';
+	// v.table[1325 + (v.width * 2) + 1] = L'■';
+	// v.table[1325 + v.width + 2] = L'■';
 	
 
 	print_table(&v);
+	usleep(1000 * 1000);
 	while(frames--)
 	{
 		update_frame(&v);
 		print_table(&v);
-		usleep(100 * 1000);
+		usleep(200 * 1000);
 	}
     free(v.table);
     return 0;
